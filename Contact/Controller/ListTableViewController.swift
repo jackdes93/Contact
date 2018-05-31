@@ -15,6 +15,7 @@ class ListTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         createTempleDataUser(users: 5)
+        self.navigationItem.leftBarButtonItem = self.editButtonItem
     }
     
 //    Data Example User
@@ -87,14 +88,33 @@ class ListTableViewController: UITableViewController {
         return true
     }
     
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+//            tableView.deleteRows(at: [1, 3], with: .fade)
+            self.arrayItems.remove(at: indexPath.row)
+            self.tableView.reloadData()
+        }
+    }
+    
+   override func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCellEditingStyle {
+        return .none
+    }
+
+    override func tableView(_ tableView: UITableView, shouldIndentWhileEditingRowAt indexPath: IndexPath) -> Bool {
+        return false
+    }
+    
+    override func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+        let rowMove = self.arrayItems[sourceIndexPath.row]
+        arrayItems.remove(at: sourceIndexPath.row)
+        arrayItems.insert(rowMove, at: destinationIndexPath.row)
     }
     
     override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
         return true
     }
 
+    
     //    Event Button
     @IBAction func addNewUser(_ sender: UIBarButtonItem) {
         addNewUser()
