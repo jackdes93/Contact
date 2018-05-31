@@ -88,6 +88,18 @@ class ListTableViewController: UITableViewController {
         return true
     }
     
+    override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+        let deletion = UITableViewRowAction(style: .default, title: "Delete") { (action, index) in
+
+        }
+
+        let move = UITableViewRowAction(style: .default, title: "Move") { (action, index) in
+
+        }
+
+        return [deletion, move]
+    }
+    
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
 //            tableView.deleteRows(at: [1, 3], with: .fade)
