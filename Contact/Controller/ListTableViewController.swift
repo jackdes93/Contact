@@ -83,6 +83,17 @@ class ListTableViewController: UITableViewController {
         return 80.0
     }
     
+    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        return true
+    }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+    }
+    
+    override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
+        return true
+    }
 
     //    Event Button
     @IBAction func addNewUser(_ sender: UIBarButtonItem) {
