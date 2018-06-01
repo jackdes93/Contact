@@ -7,15 +7,22 @@
 //
 
 import UIKit
+import Contacts
 
 class ListTableViewController: UITableViewController {
     
     var arrayItems = [User]()
+    var contacts = CNContactStore()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        createTempleDataUser(users: 5)
-        self.navigationItem.leftBarButtonItem = self.editButtonItem
+//        createTempleDataUser(users: 5)
+        contacts.requestAccess(for: .contacts) { (success, error) in
+            if !success {
+                print(error.debugDescription)
+            }
+        }
+       self.fetchDataContacts()
     }
     
 //    Data Example User
@@ -24,6 +31,19 @@ class ListTableViewController: UITableViewController {
             let user = User(userName: "Employer \(num)", phoneNumber: "142\(num + 1)5432\(num)", nameImage: nil)
             arrayItems.append(user)
         }
+    }
+    
+    func fetchDataContacts() {
+        let keys = [CNContactGivenNameKey, CNContactPhoneNumbersKey] as [CNKeyDescriptor]
+        let request = CNContactFetchRequest(keysToFetch: keys)
+        try! contacts.enumerateContacts(with: request) { (contact, stoppingPoint) in
+            let name = contact.givenName
+            let phone = contact.phoneNumbers.first?.value.stringValue
+            
+            let item = User(userName: name, phoneNumber: phone!, nameImage: nil)
+            self.arrayItems.append(item)
+        }
+         self.tableView.reloadData()
     }
     
 //    Alert add new contact
@@ -90,19 +110,33 @@ class ListTableViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
         let deletion = UITableViewRowAction(style: .default, title: "Delete") { (action, index) in
-
+            self.arrayItems.remove(at: indexPath.row)
+            tableView.reloadData()
         }
 
         let move = UITableViewRowAction(style: .default, title: "Move") { (action, index) in
-
+           tableView.setEditing(true, animated: true)
         }
-
-        return [deletion, move]
+        
+        move.backgroundColor = .gray
+        
+        let checkMark = UITableViewRowAction(style: .default, title: "Chek") { (action, index) in
+            if let cell = tableView.cellForRow(at: index) {
+                if cell.accessoryType == .checkmark {
+                    cell.accessoryType = .none
+                } else {
+                    cell.accessoryType = .checkmark
+                }
+            }
+        }
+        
+        checkMark.backgroundColor = .blue
+        
+        return [deletion, move, checkMark]
     }
     
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-//            tableView.deleteRows(at: [1, 3], with: .fade)
             self.arrayItems.remove(at: indexPath.row)
             self.tableView.reloadData()
         }
