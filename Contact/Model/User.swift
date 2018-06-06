@@ -8,15 +8,11 @@
 
 import Foundation
 
-class User {
+struct User {
     var userName: String = ""
     var phoneNumber: String = ""
     var nameImage: String!
 
-    init() {
-        
-    }
-    
     init(userName: String, phoneNumber: String, nameImage:String?) {
         self.userName = userName
         self.phoneNumber = phoneNumber

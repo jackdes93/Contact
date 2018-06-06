@@ -7,12 +7,14 @@
 //
 
 import UIKit
+import Foundation
 import Contacts
 
 class ListTableViewController: UITableViewController {
     
     var arrayItems = [User]()
     var contacts = CNContactStore()
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,7 +24,10 @@ class ListTableViewController: UITableViewController {
                 print(error.debugDescription)
             }
         }
+    
+//       self.addNewContact()
        self.fetchDataContacts()
+        self.findNumber()
     }
     
 //    Data Example User
@@ -33,22 +38,113 @@ class ListTableViewController: UITableViewController {
         }
     }
     
+    func changeFirstNumber(string keyCheck: String  ,and phoneNumber: String) -> String {
+        var numberOriganal = phoneNumber
+        switch keyCheck {
+        case "0167":
+            numberOriganal = "037\(numberOriganal)"
+        case "0120":
+            numberOriganal = "070\(numberOriganal)"
+        default:
+            break
+        }
+        
+        return numberOriganal
+    }
+    
+    func findNumber() {
+        let keys = [CNContactPhoneNumbersKey] as [CNKeyDescriptor]
+        let request = CNContactFetchRequest(keysToFetch: keys)
+        let separators = CharacterSet(charactersIn: "(,),-, ")
+        do {
+            try contacts.enumerateContacts(with: request, usingBlock: { (contact, stoppingPoint) in
+                let listsPhoneNumber = contact.phoneNumbers
+                if (contact.phoneNumbers.count > 1) {
+                    for index in 0...listsPhoneNumber.count - 1 {
+                        var numberPhone = listsPhoneNumber[index].value.stringValue.components(separatedBy: separators).joined()
+                        let stringCheckIndex = numberPhone.index(numberPhone.startIndex, offsetBy: 3)
+                        let stringCheck = numberPhone[...stringCheckIndex]
+                        let rangeString = numberPhone.startIndex..<numberPhone.index(after: stringCheckIndex)
+                        if (numberPhone.count > 10)  {
+                            switch String(stringCheck) {
+                                case "0167" :
+                                    print(numberPhone)
+                                    numberPhone.removeSubrange(rangeString)
+                                    print(self.changeFirstNumber(string: String(stringCheck), and: numberPhone))
+                                case "0120":
+                                    print(numberPhone)
+                                    numberPhone.removeSubrange(rangeString)
+                                    print(self.changeFirstNumber(string: String(stringCheck), and: numberPhone))
+                                default:
+                                    break
+                            }
+                        }
+                        
+                    }
+                    print("--------------------------------------")
+                } else {
+                    print("\n")
+                    let phone = (contact.phoneNumbers.first?.value.stringValue == nil) ? "No Phone Number" : (contact.phoneNumbers.first?.value.stringValue)!
+                    let numberPhone = phone.components(separatedBy: separators).joined()
+//                    let stringCheckIndex = numberPhone.index(numberPhone.startIndex, offsetBy: 3)
+//                    let stringCheck = numberPhone[...stringCheckIndex]
+//                    print(stringCheck)
+                    if (numberPhone.count > 10) {
+                        print(numberPhone)
+                        print(numberPhone.replacingOccurrences(of: "0167", with: "037"))
+                    }
+                    print("---------------ooooooo----------------")
+                    print("\n")
+                }
+                
+            })
+        } catch {
+            print("Something have error: \(error)")
+        }
+    }
+    
     func fetchDataContacts() {
         let keys = [CNContactGivenNameKey, CNContactPhoneNumbersKey] as [CNKeyDescriptor]
         let request = CNContactFetchRequest(keysToFetch: keys)
-        try! contacts.enumerateContacts(with: request) { (contact, stoppingPoint) in
-            let name = contact.givenName
-            let phone = contact.phoneNumbers.first?.value.stringValue
-            
-            let item = User(userName: name, phoneNumber: phone!, nameImage: nil)
-            self.arrayItems.append(item)
+        do {
+            try contacts.enumerateContacts(with: request) { (contact, stoppingPoint) in
+                let name = contact.givenName
+                let phone = (contact.phoneNumbers.first?.value.stringValue == nil) ? "No phonenumber" : contact.phoneNumbers.first?.value.stringValue
+//                if (contact.phoneNumbers.count == 2) {
+//                    for phoneT in contact.phoneNumbers {
+//                        print("This is Number phone of \(contact.givenName) :\(phoneT.value.stringValue)")
+//
+//                    }
+//                    print("\(contact.phoneNumbers[0].value.stringValue) --- \(contact.phoneNumbers[1].value.stringValue)")
+//                }
+                
+                let item = User(userName: name, phoneNumber: phone!, nameImage: nil)
+                self.arrayItems.append(item)
+            }
+            self.tableView.reloadData()
+        } catch {
+            print("Something have error: \(error)")
         }
-         self.tableView.reloadData()
+    }
+    
+    func addNewContact() {
+        let saveRequest = CNSaveRequest()
+        let contactNew = CNMutableContact()
+        let mobilePhoneNumber = CNPhoneNumber(stringValue: "0907989977")
+        let labelPhone = CNLabeledValue(label: CNLabelPhoneNumberMobile, value: mobilePhoneNumber)
+        contactNew.givenName = "Binh-J"
+        contactNew.phoneNumbers = [labelPhone]
+        
+        saveRequest.add(contactNew, toContainerWithIdentifier: nil)
+        do {
+            try contacts.execute(saveRequest)
+        } catch {
+            print("Something error \(error)")
+        }
     }
     
 //    Alert add new contact
     func addNewUser() {
-        var newUser = User()
         let alert = UIAlertController(title: "Add new user", message: "", preferredStyle: .alert)  // Defind alert view
         
 //        add textField into alert view
@@ -65,7 +161,7 @@ class ListTableViewController: UITableViewController {
             let nameUser = alert.textFields![0] as UITextField
             let phoneNumber = alert.textFields![1] as UITextField
             
-            newUser = User(userName: nameUser.text!, phoneNumber: phoneNumber.text!, nameImage: nil)
+            let newUser = User(userName: nameUser.text!, phoneNumber: phoneNumber.text!, nameImage: nil)
             self.arrayItems.append(newUser)
             self.tableView.reloadData()
         })
