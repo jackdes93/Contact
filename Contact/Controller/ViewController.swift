@@ -10,9 +10,19 @@ import UIKit
 
 class ViewController: UIViewController {
 
+    @IBOutlet var imgContact: UIImageView!
+    @IBOutlet var lblName: UILabel!
+    @IBOutlet var lblPhoneNumber: UILabel!
+    
+    var user:User? = nil
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        if let user = user {
+            imgContact.image = UIImage(contentsOfFile: "imageUser.png")
+            lblName.text = user.userName
+            lblPhoneNumber.text = user.phoneNumber
+        }
     }
 
     override func didReceiveMemoryWarning() {
