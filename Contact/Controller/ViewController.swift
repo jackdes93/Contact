@@ -41,7 +41,7 @@ class ViewController: UIViewController {
                     listLabel[index].isHidden = true
                     listLblPhone[index].isHidden = true
                 }
-            }  else if (contact.phoneNumbers.count < listLblPhone.count) {
+            } else if (contact.phoneNumbers.count < listLblPhone.count) {
                 for index in 0...contact.phoneNumbers.count - 1 {
                     listLabel[index].text = contact.phoneNumbers[index].label
                     listLblPhone[index].text = contact.phoneNumbers[index].value.stringValue

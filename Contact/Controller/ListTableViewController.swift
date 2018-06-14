@@ -30,7 +30,6 @@ class ListTableViewController: UITableViewController {
         
     }
    
-    
     //  MARK:  Function
     func addNewUser() {
         let alert = UIAlertController(title: "Liên Hệ Mới", message: "", preferredStyle: .alert)
@@ -124,13 +123,14 @@ class ListTableViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-            self.arrayItems.remove(at: indexPath.row)
+            self.sections[indexPath.section].remove(at: indexPath.row)
+//            self.arrayItems.remove(at: indexPath.row)
             self.tableView.reloadData()
         }
     }
     
    override func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCellEditingStyle {
-        return .none
+        return .delete
     }
 
     override func tableView(_ tableView: UITableView, shouldIndentWhileEditingRowAt indexPath: IndexPath) -> Bool {
