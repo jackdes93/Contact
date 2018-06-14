@@ -11,108 +11,78 @@ import Foundation
 import Contacts
 
 class ListTableViewController: UITableViewController {
-    
-    var arrayItems = [User]()
-    var contacts = CNContactStore()
-    var saveRequest = CNSaveRequest()
-    
+    //    MARK: Defind variable
+    var arrayItems = [CNContact]()
+    var listAlphabetically = [String]()
+    var sections = [[CNContact]]()
+    var sharedInstant = DataProvider.sharedInstance
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        contacts.requestAccess(for: .contacts) { (success, error) in
-            if !success {
-                self.acccessContact()
-            }
+        self.navigationItem.leftBarButtonItem = editButtonItem
+        arrayItems = sharedInstant.fetchDataContact()
+        listAlphabetically = Array(Set(self.arrayItems.map { $0.familyName.firstCharacterOfString()})).sorted()
+        sections = listAlphabetically.map { list in
+            return arrayItems
+                .filter { $0.familyName.firstCharacterOfString() == list}
+                .sorted {$0.familyName > $1.familyName }
         }
-    
-       self.fetchDataContacts()
-    }
-    
-    func acccessContact() {
         
     }
+   
     
-    func fetchDataContacts() {
-        arrayItems = []
-        let keys = [CNContactGivenNameKey, CNContactPhoneNumbersKey] as [CNKeyDescriptor]
-        let request = CNContactFetchRequest(keysToFetch: keys)
-        do {
-            try contacts.enumerateContacts(with: request) { (contact, stoppingPoint) in
-                let name = contact.givenName
-                let phone = (contact.phoneNumbers.first?.value.stringValue == nil) ? "No phonenumber" : contact.phoneNumbers.first?.value.stringValue
-                let item = User(userName: name, phoneNumber: phone!, nameImage: nil)
-                self.arrayItems.append(item)
-               self.arrayItems = self.arrayItems.sorted {$0.userName < $1.userName}
-            }
-            self.tableView.reloadData()
-        } catch {
-            print("Something have error: \(error)")
-        }
-    }
-    
-    func addNewContact(contactStore: CNContactStore, saveRequest: CNSaveRequest, user: User) {
-        let contactNew = CNMutableContact()
-        let mobilePhoneNumber = CNPhoneNumber(stringValue: user.phoneNumber)
-        let labelPhone = CNLabeledValue(label: CNLabelPhoneNumberMobile, value: mobilePhoneNumber)
-        contactNew.givenName = user.userName
-        contactNew.phoneNumbers = [labelPhone]
-        
-        saveRequest.add(contactNew, toContainerWithIdentifier: nil)
-        do {
-            try contactStore.execute(saveRequest)
-            self.fetchDataContacts()
-        } catch {
-            print("Something error \(error)")
-        }
-    }
-    
-//    Alert add new contact
+    //  MARK:  Function
     func addNewUser() {
-        let alert = UIAlertController(title: "Add new user", message: "", preferredStyle: .alert)  // Defind alert view
+        let alert = UIAlertController(title: "Liên Hệ Mới", message: "", preferredStyle: .alert)
+        alert.addTextField { (textField) in textField.placeholder = "Họ" }
+        alert.addTextField { (textField) in textField.placeholder = "Tên Liên Hệ" }
+        alert.addTextField { (textField) in textField.placeholder = "Số Điện Thoại" }
         
-//        add textField into alert view
-        alert.addTextField { (textField) in
-            textField.placeholder = "Name"
-        }
-        
-        alert.addTextField { (textField) in
-            textField.placeholder = "Phone number"
-        }
-        
-//        add action
-        let actionAdd = UIAlertAction(title: "Add", style: .default, handler: { (alertAction) in
-            let nameUser = alert.textFields![0] as UITextField
-            let phoneNumber = alert.textFields![1] as UITextField
+        let actionAdd = UIAlertAction(title: "Thêm", style: .default, handler: { (alertAction) in
+            let familyName = alert.textFields![0] as UITextField
+            let givenName = alert.textFields![1] as UITextField
+            let phoneNumber = CNLabeledValue(label: CNLabelPhoneNumberMain, value: CNPhoneNumber(stringValue: (alert.textFields![2] as UITextField).text!))
+            let newContact = CNMutableContact()
             
-            let newUser = User(userName: nameUser.text!, phoneNumber: phoneNumber.text!, nameImage: nil)
-            self.addNewContact(contactStore: self.contacts, saveRequest: self.saveRequest, user: newUser)
+            newContact.familyName = familyName.text!
+            newContact.givenName = givenName.text!
+            newContact.phoneNumbers = [phoneNumber]
+            self.sharedInstant.addNewContact(contact: newContact)
+            self.tableView.reloadData()
         })
         
-        let cancel = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        let cancel = UIAlertAction(title: "Hủy", style: .cancel, handler: nil)
         
         alert.addAction(actionAdd)
         alert.addAction(cancel)
         self.present(alert, animated: true)
     }
     
-//    Setting Table
+    //    MARK: Delegate & Protocal Table View
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
+        return listAlphabetically.count
+    }
+    
+    override func sectionIndexTitles(for tableView: UITableView) -> [String]? {
+        return listAlphabetically
+    }
+    
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return listAlphabetically[section]
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return arrayItems.count
+        return sections[section].count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell") as! CustomCellTableView
-        if (indexPath.row % 2 == 0) {
-            cell.backgroundColor = .yellow
+        if let imageData = sections[indexPath.section][indexPath.row].imageData {
+            cell.imgAvatar.image = UIImage(data: imageData)
         } else {
-            cell.backgroundColor = .none
+            cell.imgAvatar.image = UIImage(named: "imageUser.png")
         }
-        cell.lblName.text = arrayItems[indexPath.row].userName
-        cell.lblPhone.text = arrayItems[indexPath.row].phoneNumber
-        cell.imgAvatar.image = UIImage(named: "imageUser.png")
+        cell.lblName.text = "\(sections[indexPath.section][indexPath.row].familyName) \(sections[indexPath.section][indexPath.row].givenName)"
         
         return cell
     }
@@ -149,7 +119,7 @@ class ListTableViewController: UITableViewController {
         
         checkMark.backgroundColor = .blue
         
-        return [deletion, move, checkMark]
+        return [deletion, checkMark]
     }
     
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
@@ -185,12 +155,27 @@ class ListTableViewController: UITableViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         var indexPath = self.tableView.indexPathForSelectedRow!
         if let destination = segue.destination as? ViewController {
-            destination.user = arrayItems[(indexPath.row)]
+            destination.contact = sections[indexPath.section][indexPath.row]
         }
     }
-    //    Event Button
+//  MARK:  Event Button
     @IBAction func addNewUser(_ sender: UIBarButtonItem) {
         addNewUser()
         self.tableView.reloadData()
+    }
+}
+
+// MARK: Extension
+public extension String {
+
+    func firstCharacterOfString() -> String {
+        return String(self[self.startIndex]).uppercased()
+    }
+    
+    mutating func replaceString(string:String, at startIndex:String.Index, ofSetBy: Int) -> String {
+        let range = startIndex..<self.index(startIndex, offsetBy: ofSetBy)
+        self.replaceSubrange(range, with: string)
+
+        return self
     }
 }

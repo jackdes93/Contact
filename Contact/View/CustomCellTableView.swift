@@ -11,7 +11,6 @@ import UIKit
 class CustomCellTableView: UITableViewCell {
     
     @IBOutlet var lblName: UILabel!
-    @IBOutlet var lblPhone: UILabel!
     @IBOutlet weak var imgAvatar: UIImageView!
     
     override func setNeedsLayout() {

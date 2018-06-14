@@ -10,12 +10,16 @@ import Foundation
 
 struct User {
     var userName: String = ""
-    var phoneNumber: String = ""
+    var phoneNumbers = [String]()
     var nameImage: String!
+    var identifier: String  = ""
 
-    init(userName: String, phoneNumber: String, nameImage:String?) {
+    init(identifier: String, userName: String, phoneNumbers: [String], nameImage:String?) {
+        self.identifier = identifier
         self.userName = userName
-        self.phoneNumber = phoneNumber
+        for item in phoneNumbers {
+            self.phoneNumbers.append(item)
+        }
         
         if (nameImage != nil) {
             self.nameImage = nameImage!
@@ -23,4 +27,9 @@ struct User {
             self.nameImage = "imageUser.png"
         }
     }
+}
+
+struct Object {
+    var sectionName: String!
+    var sectionValue:[User]!
 }

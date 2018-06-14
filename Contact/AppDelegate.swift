@@ -7,15 +7,38 @@
 //
 
 import UIKit
+import Contacts
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-
-
+    var contactStore = CNContactStore()
+    
+    //    MARK: Alert Check allow access contacts
+    func alertAcccessContact() {
+        let alertView = UIAlertController(title: "Enable Access Contact", message: "Dou you have enable access contact for app?", preferredStyle: .alert)
+        let accept = UIAlertAction(title: "Accept", style: .default) { (acceptAction) in
+            self.openSetting()
+        }
+        let cancel = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        alertView.addAction(accept)
+        alertView.addAction(cancel)
+        window?.rootViewController?.present(alertView, animated: true, completion: nil)
+    }
+    
+    func openSetting() {
+        let url = URL(string: UIApplicationOpenSettingsURLString)
+        print(url!)
+        UIApplication.shared.openURL(url!)
+    }
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        contactStore.requestAccess(for: .contacts) { (success, error) in
+            if !success {
+                self.alertAcccessContact()
+            }
+        }
         return true
     }
 
