@@ -15,19 +15,13 @@ class ListTableViewController: UITableViewController {
     var arrayItems = [CNContact]()
     var listAlphabetically = [String]()
     var sections = [[CNContact]]()
+    
     var sharedInstant = DataProvider.sharedInstance
 
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationItem.leftBarButtonItem = editButtonItem
-        arrayItems = sharedInstant.fetchDataContact()
-        listAlphabetically = Array(Set(self.arrayItems.map { $0.familyName.firstCharacterOfString()})).sorted()
-        sections = listAlphabetically.map { list in
-            return arrayItems
-                .filter { $0.familyName.firstCharacterOfString() == list}
-                .sorted {$0.familyName > $1.familyName }
-        }
-        
+        self.reloadData()
     }
    
     //  MARK:  Function
@@ -47,7 +41,7 @@ class ListTableViewController: UITableViewController {
             newContact.givenName = givenName.text!
             newContact.phoneNumbers = [phoneNumber]
             self.sharedInstant.addNewContact(contact: newContact)
-            self.tableView.reloadData()
+            self.reloadData()
         })
         
         let cancel = UIAlertAction(title: "Hủy", style: .cancel, handler: nil)
@@ -55,6 +49,19 @@ class ListTableViewController: UITableViewController {
         alert.addAction(actionAdd)
         alert.addAction(cancel)
         self.present(alert, animated: true)
+    }
+    
+    func reloadData() {
+        arrayItems = sharedInstant.fetchDataContact()
+        listAlphabetically = Array(Set(self.arrayItems.map {
+            return $0.familyName.isEmpty ? $0.givenName.firstCharacterOfString() : $0.familyName.firstCharacterOfString()
+        })).sorted()
+        
+        sections = listAlphabetically.map { list in
+            return arrayItems
+                .filter { return ($0.familyName.isEmpty) ? ($0.givenName.firstCharacterOfString() == list): ($0.familyName.firstCharacterOfString() == list) }
+                .sorted {$0.familyName > $1.familyName || $0.givenName > $1.givenName }
+        }
     }
     
     //    MARK: Delegate & Protocal Table View

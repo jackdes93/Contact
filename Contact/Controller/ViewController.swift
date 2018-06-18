@@ -14,7 +14,7 @@ protocol ViewControllerDelegate {
     func passingData(text: String)
 }
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, EditDelegate {
 
     @IBOutlet var imgContact: UIImageView!
     @IBOutlet var lblName: UILabel!
@@ -28,7 +28,7 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         if let contact = contact {
-            imgContact.image = (contact.imageData != nil) ? UIImage(data: contact.imageData!) : UIImage(named: "imageUser.png")
+            imgContact.image = (contact.thumbnailImageData != nil) ? UIImage(data: contact.thumbnailImageData!) : UIImage(named: "imageUser.png")
             lblName.text = "\(contact.familyName) \(contact.givenName)"
 
             if (contact.phoneNumbers.count == listLblPhone.count) {
@@ -59,7 +59,7 @@ class ViewController: UIViewController {
             }
         }
         self.navigationItem.rightBarButtonItem = editButtonItem
-        
+//        print(contact)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -67,6 +67,7 @@ class ViewController: UIViewController {
         self.imgContact.clipsToBounds = true
         lblName.textColor = .black
         lblName.font = UIFont(name: "Helvetica", size: 40)
+        
     }
     
     override func didReceiveMemoryWarning() {
@@ -81,10 +82,45 @@ class ViewController: UIViewController {
     
     override func setEditing(_ editing: Bool, animated: Bool) {
         if let editView = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "EditView") as? EditViewController {
-                editView.testString = "Jackdesy1993"
+            editView.contactInfor = contact
                 present(editView, animated: true, completion: nil)
         }
     
+    }
+    
+    //    MARK: Reload from Delegate
+    func reloadDataUpdate(newcontact: CNContact) {
+//        imgContact.image = (contact.imageData != nil) ? UIImage(data: contact.imageData!) : UIImage(named: "imageUser.png")
+//        lblName.text = "\(contact.familyName) \(contact.givenName)"
+//
+//        if (contact.phoneNumbers.count == listLblPhone.count) {
+//            for index in 0...contact.phoneNumbers.count - 1 {
+//                listLabel[index].text = contact.phoneNumbers[index].label
+//                listLblPhone[index].text = contact.phoneNumbers[index].value.stringValue
+//            }
+//        } else if (contact.phoneNumbers.count == 0) {
+//            for index in 0...listLblPhone.count - 1 {
+//                listLabel[index].isHidden = true
+//                listLblPhone[index].isHidden = true
+//            }
+//        } else if (contact.phoneNumbers.count < listLblPhone.count) {
+//            for index in 0...contact.phoneNumbers.count - 1 {
+//                listLabel[index].text = contact.phoneNumbers[index].label
+//                listLblPhone[index].text = contact.phoneNumbers[index].value.stringValue
+//            }
+//
+//            for i in contact.phoneNumbers.endIndex...listLblPhone.count - 1 {
+//                listLabel[i].isHidden = true
+//                listLblPhone[i].isHidden = true
+//            }
+//        } else {
+//            for index in 0...listLblPhone.count - 1 {
+//                listLabel[index].text = contact.phoneNumbers[index].label
+//                listLblPhone[index].text = contact.phoneNumbers[index].value.stringValue
+//            }
+//        }
+        print("-----------------------------")
+//        print(newcontact.imageDataAvailable)
     }
 }
 
