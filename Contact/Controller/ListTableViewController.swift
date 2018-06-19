@@ -83,7 +83,7 @@ class ListTableViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell") as! CustomCellTableView
-        if let imageData = sections[indexPath.section][indexPath.row].imageData {
+        if let imageData = sections[indexPath.section][indexPath.row].thumbnailImageData {
             cell.imgAvatar.image = UIImage(data: imageData)
         } else {
             cell.imgAvatar.image = UIImage(named: "imageUser.png")
@@ -161,7 +161,7 @@ class ListTableViewController: UITableViewController {
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         var indexPath = self.tableView.indexPathForSelectedRow!
-        if let destination = segue.destination as? ViewController {
+        if let destination = segue.destination as? DetailViewController {
             destination.contact = sections[indexPath.section][indexPath.row]
         }
     }

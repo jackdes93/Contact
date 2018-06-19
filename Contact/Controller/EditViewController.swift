@@ -24,23 +24,28 @@ class EditViewController: UIViewController, UITextFieldDelegate {
     var stackViewInfor = UIStackView()
     var subStackInfor = UIStackView()
     var stackViewPhone = UIStackView()
-    var stackListPhone = UIStackView()
     var imgContact = UIImageView()
     var txtGiveName = UITextField()
     var txtFamilyName = UITextField()
-    
+    var scrollView: UIScrollView = {
+        let scr = UIScrollView()
+        scr.translatesAutoresizingMaskIntoConstraints = false
+        scr.contentSize.height = 2000
+        return scr
+    }()
     override func viewDidLoad() {
         super.viewDidLoad()
         btnSave.isEnabled = false
         txtGiveName.delegate = self
         txtFamilyName.delegate = self
+        
 //        Init AutoLayout
         autolayoutStackViewInfo()
         autolayoutStackViewPhone()
     }
 
     override func viewDidDisappear(_ animated: Bool) {
-        if let parentView = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "DetailView") as? ViewController {
+        if let parentView = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "DetailView") as? DetailViewController {
             self.delegate = parentView
             let contact = DataProvider.sharedInstance.fetchContactByIdentifier(identifier: contactInfor.identifier)
             self.delegate?.reloadDataUpdate(newcontact: contact)
@@ -50,12 +55,12 @@ class EditViewController: UIViewController, UITextFieldDelegate {
     override func viewDidLayoutSubviews() {
         self.view.addSubview(mainStack)
         mainStack.translatesAutoresizingMaskIntoConstraints = false
-        mainStack.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 10).isActive = true
-        mainStack.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -10).isActive = true
+        mainStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10).isActive = true
+        mainStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10).isActive = true
         if #available(iOS 11.0, *) {
-            mainStack.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 45).isActive = true
+            mainStack.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 50).isActive = true
         } else {
-            mainStack.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 45).isActive = true
+            mainStack.topAnchor.constraint(equalTo: view.topAnchor, constant: 50).isActive = true
         }
         mainStack.heightAnchor.constraint(greaterThanOrEqualToConstant: 240).isActive = true
         mainStack.axis = .vertical // Set hiển thị theo chiều dọc
@@ -68,20 +73,24 @@ class EditViewController: UIViewController, UITextFieldDelegate {
     private func autolayoutStackViewInfo() {
         mainStack.addArrangedSubview(stackViewInfor)
         stackViewInfor.translatesAutoresizingMaskIntoConstraints = false
-        stackViewInfor.heightAnchor.constraint(equalToConstant: 100).isActive = true
+        stackViewInfor.heightAnchor.constraint(equalToConstant: 120).isActive = true
         
         // Stack View setting
         stackViewInfor.axis = .horizontal
         stackViewInfor.alignment = .fill
         stackViewInfor.distribution = .fill
-        stackViewInfor.spacing = 20
+        stackViewInfor.spacing = 10
         
         //  Autolayout for Image
         imgContact.translatesAutoresizingMaskIntoConstraints = false
-        imgContact.image = #imageLiteral(resourceName: "imageUser.png")
-        imgContact.contentMode = .scaleAspectFit
-        imgContact.widthAnchor.constraint(equalTo: imgContact.heightAnchor, multiplier: 1).isActive = true
         stackViewInfor.addArrangedSubview(imgContact)
+        imgContact.frame.size = CGSize(width: 120, height: 120)
+        imgContact.layer.cornerRadius = imgContact.frame.width / 2
+        imgContact.clipsToBounds = true
+        imgContact.image = (contactInfor.thumbnailImageData != nil) ? UIImage(data: contactInfor.thumbnailImageData!, scale: 1) : #imageLiteral(resourceName: "imageUser.png")
+        imgContact.contentMode = .scaleToFill
+        imgContact.widthAnchor.constraint(equalTo: imgContact.heightAnchor, multiplier: 1).isActive = true
+        
         
         // Stackview sub
         subStackInfor.translatesAutoresizingMaskIntoConstraints = false
@@ -95,6 +104,7 @@ class EditViewController: UIViewController, UITextFieldDelegate {
         let txtGiveName = UITextField()
         txtGiveName.translatesAutoresizingMaskIntoConstraints = false
         txtGiveName.placeholder = "Give Name"
+        txtGiveName.text = contactInfor.givenName
         txtGiveName.textColor = .gray
         txtGiveName.delegate = self
         subStackInfor.addArrangedSubview(txtGiveName)
@@ -103,6 +113,7 @@ class EditViewController: UIViewController, UITextFieldDelegate {
         let txtFamilyName = UITextField()
         txtFamilyName.translatesAutoresizingMaskIntoConstraints = false
         txtFamilyName.placeholder = "Family Name"
+        txtFamilyName.text = contactInfor.familyName
         txtFamilyName.textColor = .gray
         txtFamilyName.delegate = self
         subStackInfor.addArrangedSubview(txtFamilyName)
@@ -110,7 +121,7 @@ class EditViewController: UIViewController, UITextFieldDelegate {
         // Title
         let title = UILabel()
         title.translatesAutoresizingMaskIntoConstraints = false
-        title.heightAnchor.constraint(equalToConstant: 30).isActive = true
+        title.heightAnchor.constraint(equalToConstant: 10).isActive = true
         title.text = "Phones: "
         title.textColor = .black
         title.font = UIFont.boldSystemFont(ofSize: 14)
@@ -120,16 +131,16 @@ class EditViewController: UIViewController, UITextFieldDelegate {
     private func autolayoutStackViewPhone() {
         mainStack.addArrangedSubview(stackViewPhone)
         stackViewPhone.translatesAutoresizingMaskIntoConstraints = false
-        stackViewPhone.heightAnchor.constraint(equalToConstant: 120).isActive = true
-        stackViewPhone.changeBackgroundColor(color: .blue)
+        stackViewPhone.heightAnchor.constraint(greaterThanOrEqualToConstant: 120).isActive = true
+        
         // Stack View Phone setting
         stackViewPhone.axis = .vertical
         stackViewPhone.alignment = .fill
         stackViewPhone.distribution = .fillEqually
         stackViewPhone.spacing = 10
-        
+        let range = contactInfor.phoneNumbers.count - 1
         // Item Phone
-        for i in 0...2 {
+        for i in 0...range {
             let item = UIStackView()
             stackViewPhone.addArrangedSubview(item)
             item.translatesAutoresizingMaskIntoConstraints = false
@@ -140,11 +151,11 @@ class EditViewController: UIViewController, UITextFieldDelegate {
             
             let lblValue = UILabel()
             lblValue.translatesAutoresizingMaskIntoConstraints = false
-            lblValue.text = "Home \(i)"
+            lblValue.text = contactInfor.phoneNumbers[i].label
             item.addArrangedSubview(lblValue)
             let txtPhone = UITextField()
             txtPhone.translatesAutoresizingMaskIntoConstraints = false
-            txtPhone.text = "096\(i + 1)42\(i)390"
+            txtPhone.text = contactInfor.phoneNumbers[i].value.stringValue
             txtPhone.textColor = .blue
             item.addArrangedSubview(txtPhone)
         }

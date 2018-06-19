@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="ypf-5m-I87">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="fwh-7h-pAd">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
@@ -11,119 +11,16 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--View Controller-->
+        <!--Detail View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController storyboardIdentifier="DetailView" useStoryboardIdentifierAsRestorationIdentifier="YES" id="BYZ-38-t0r" customClass="ViewController" customModule="Contact" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="DetailView" automaticallyAdjustsScrollViewInsets="NO" useStoryboardIdentifierAsRestorationIdentifier="YES" id="BYZ-38-t0r" customClass="DetailViewController" customModule="Contact" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ktd-W0-XNt">
-                                <rect key="frame" x="67.5" y="202" width="240" height="30"/>
-                                <color key="backgroundColor" red="0.99999600649999998" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="240" id="xnF-MK-CEj"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" name="Helvetica-Bold" family="Helvetica" pointSize="26"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Phone :" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="50n-4g-3Qi">
-                                <rect key="frame" x="10" y="270" width="355" height="24"/>
-                                <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="20"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="lkp-zk-6HU">
-                                <rect key="frame" x="10" y="310" width="355" height="89"/>
-                                <subviews>
-                                    <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="3Ad-zv-hZd">
-                                        <rect key="frame" x="0.0" y="0.0" width="355" height="23"/>
-                                        <subviews>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="CNLabelPhone" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lBT-GW-i7B">
-                                                <rect key="frame" x="0.0" y="0.0" width="172.5" height="23"/>
-                                                <fontDescription key="fontDescription" type="system" weight="medium" pointSize="17"/>
-                                                <nil key="textColor"/>
-                                                <nil key="highlightedColor"/>
-                                            </label>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Number" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zeD-ec-TB8">
-                                                <rect key="frame" x="182.5" y="0.0" width="172.5" height="23"/>
-                                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="19"/>
-                                                <color key="textColor" red="0.1904777711" green="0.58132016450000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                <nil key="highlightedColor"/>
-                                            </label>
-                                        </subviews>
-                                    </stackView>
-                                    <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="fqJ-C0-MfN">
-                                        <rect key="frame" x="0.0" y="33" width="355" height="23"/>
-                                        <subviews>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="CNLabelPhone" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2iM-aZ-iq9">
-                                                <rect key="frame" x="0.0" y="0.0" width="172.5" height="23"/>
-                                                <fontDescription key="fontDescription" type="system" weight="medium" pointSize="17"/>
-                                                <nil key="textColor"/>
-                                                <nil key="highlightedColor"/>
-                                            </label>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Number" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="C4g-Aw-IOp">
-                                                <rect key="frame" x="182.5" y="0.0" width="172.5" height="23"/>
-                                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="19"/>
-                                                <color key="textColor" red="0.1904777711" green="0.58132016450000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                <nil key="highlightedColor"/>
-                                            </label>
-                                        </subviews>
-                                    </stackView>
-                                    <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="T8b-nL-WLb">
-                                        <rect key="frame" x="0.0" y="66" width="355" height="23"/>
-                                        <subviews>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="CNLabelPhone" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KRl-8c-Tix">
-                                                <rect key="frame" x="0.0" y="0.0" width="172.5" height="23"/>
-                                                <fontDescription key="fontDescription" type="system" weight="medium" pointSize="17"/>
-                                                <nil key="textColor"/>
-                                                <nil key="highlightedColor"/>
-                                            </label>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Number" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Oux-sG-abI">
-                                                <rect key="frame" x="182.5" y="0.0" width="172.5" height="23"/>
-                                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="19"/>
-                                                <color key="textColor" red="0.1904777711" green="0.58132016450000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                <nil key="highlightedColor"/>
-                                            </label>
-                                        </subviews>
-                                    </stackView>
-                                </subviews>
-                            </stackView>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="bcT-V6-VaS">
-                                <rect key="frame" x="127" y="77" width="120" height="120"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="120" id="BhH-FS-6aa"/>
-                                    <constraint firstAttribute="height" constant="120" id="YjW-9b-ZJu"/>
-                                </constraints>
-                            </imageView>
-                        </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                        <constraints>
-                            <constraint firstItem="bcT-V6-VaS" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="1YE-s9-OeI"/>
-                            <constraint firstItem="ktd-W0-XNt" firstAttribute="top" secondItem="bcT-V6-VaS" secondAttribute="bottom" constant="5" id="43y-Yr-N7J"/>
-                            <constraint firstItem="lkp-zk-6HU" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="Gxd-Xh-B0N"/>
-                            <constraint firstItem="lkp-zk-6HU" firstAttribute="top" secondItem="50n-4g-3Qi" secondAttribute="bottom" constant="16" id="NxT-Bt-i1A"/>
-                            <constraint firstItem="lkp-zk-6HU" firstAttribute="width" secondItem="50n-4g-3Qi" secondAttribute="width" id="RVe-AZ-seB"/>
-                            <constraint firstAttribute="trailing" secondItem="50n-4g-3Qi" secondAttribute="trailing" constant="10" id="UxO-ZC-yUU"/>
-                            <constraint firstItem="bcT-V6-VaS" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="13" id="WLJ-U6-DVW"/>
-                            <constraint firstItem="50n-4g-3Qi" firstAttribute="top" secondItem="ktd-W0-XNt" secondAttribute="bottom" constant="38" id="lmU-i7-ZUa"/>
-                            <constraint firstItem="ktd-W0-XNt" firstAttribute="centerX" secondItem="bcT-V6-VaS" secondAttribute="centerX" id="qeX-bV-aJe"/>
-                            <constraint firstItem="lkp-zk-6HU" firstAttribute="leading" secondItem="50n-4g-3Qi" secondAttribute="leading" id="vNk-Cx-qBG"/>
-                        </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
-                    <connections>
-                        <outlet property="imgContact" destination="bcT-V6-VaS" id="FEb-94-8Iz"/>
-                        <outlet property="lblName" destination="ktd-W0-XNt" id="pIf-vU-iSc"/>
-                        <outletCollection property="listLabel" destination="lBT-GW-i7B" collectionClass="NSMutableArray" id="qEF-Dt-UTH"/>
-                        <outletCollection property="listLblPhone" destination="zeD-ec-TB8" collectionClass="NSMutableArray" id="6C7-Z1-jhF"/>
-                        <outletCollection property="listLabel" destination="2iM-aZ-iq9" collectionClass="NSMutableArray" id="YCG-RP-7uc"/>
-                        <outletCollection property="listLblPhone" destination="C4g-Aw-IOp" collectionClass="NSMutableArray" id="pNv-Vm-a5R"/>
-                        <outletCollection property="listLabel" destination="KRl-8c-Tix" collectionClass="NSMutableArray" id="MJC-q0-N2g"/>
-                        <outletCollection property="listLblPhone" destination="Oux-sG-abI" collectionClass="NSMutableArray" id="8Cf-oY-NsA"/>
-                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
