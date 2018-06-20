@@ -18,18 +18,41 @@ class DetailViewController: UIViewController, EditDelegate {
 //    Defined Variable
     var contact: CNContact!
     var delegate: ViewControllerDelegate!
-    var imageContact = UIImageView()
-    var lblNameContact = UILabel()
-    var lblTitlePhone = UILabel()
+    
+    var imageContact: UIImageView = {
+        let image = UIImageView()
+        image.contentMode = .scaleToFill
+        image.translatesAutoresizingMaskIntoConstraints = false
+        image.frame.size = CGSize(width: 120, height: 120)
+        image.layer.cornerRadius = image.frame.width / 2
+        image.clipsToBounds = true
+        return image
+    }()
+    
+    var lblNameContact: UILabel = {
+        let lbl = UILabel()
+        lbl.translatesAutoresizingMaskIntoConstraints = false
+        lbl.font = UIFont.boldSystemFont(ofSize: 28)
+        lbl.textAlignment = .center
+        lbl.textColor = .black
+        return lbl
+    }()
+    var lblTitlePhone: UILabel = {
+        let lbl = UILabel()
+        lbl.translatesAutoresizingMaskIntoConstraints = false
+        lbl.font = UIFont.boldSystemFont(ofSize: 18)
+        lbl.text = "Phone : "
+        lbl.textColor = .black
+        return lbl
+    }()
     var stackViewNumberPhone = UIStackView()
     var scrollView: UIScrollView = {
         let scroll = UIScrollView()
         scroll.translatesAutoresizingMaskIntoConstraints = false
-        scroll.backgroundColor = .cyan
+        scroll.contentSize.height = 900
         return scroll
     }()
     
-   
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -37,65 +60,45 @@ class DetailViewController: UIViewController, EditDelegate {
         
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-
-    }
-    
     override func viewDidLayoutSubviews() {
-//        self.view.addSubview(scrollView)
-//
-//        scrollView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 0).isActive = true
-//        scrollView.topAnchor.constraint(equalTo: view.topAnchor, constant: 0).isActive = true
-//        scrollView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: 0).isActive = true
-//        scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0).isActive = true
-    
+        self.view.addSubview(scrollView)
+        scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0).isActive = true
+        scrollView.topAnchor.constraint(equalTo: view.topAnchor, constant: 10).isActive = true
+        scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0).isActive = true
+        scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 80).isActive = true
+        scrollView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        
         // Image autolayout
-        imageContact.translatesAutoresizingMaskIntoConstraints = false
-        imageContact.frame.size = CGSize(width: 120, height: 120)
-        imageContact.layer.cornerRadius = imageContact.frame.width / 2
-        imageContact.clipsToBounds = true
         imageContact.image = (contact.thumbnailImageData != nil) ? UIImage(data: contact.thumbnailImageData!) : #imageLiteral(resourceName: "imageUser.png")
-        imageContact.contentMode = .scaleToFill
-        self.view.addSubview(imageContact)
+        scrollView.addSubview(imageContact)
         imageContact.heightAnchor.constraint(equalToConstant: 120).isActive = true
         imageContact.heightAnchor.constraint(equalTo: imageContact.widthAnchor, multiplier: 1).isActive = true
-        imageContact.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        if #available(iOS 11, *) {
-            imageContact.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10).isActive = true
-        } else {
-            imageContact.topAnchor.constraint(equalTo: view.topAnchor, constant: 10).isActive = true
-        }
+        imageContact.centerXAnchor.constraint(equalTo: scrollView.centerXAnchor).isActive = true
+        imageContact.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 10).isActive = true
+       
 
         // Label name contact autolayout
-        lblNameContact.translatesAutoresizingMaskIntoConstraints = false
         lblNameContact.text = "\(contact.familyName) \(contact.givenName)"
-        lblNameContact.textAlignment = .center
-        lblNameContact.font = UIFont.boldSystemFont(ofSize: 28)
-        lblNameContact.textColor = .black
-        self.view.addSubview(lblNameContact)
+        scrollView.addSubview(lblNameContact)
         lblNameContact.centerXAnchor.constraint(equalTo: imageContact.centerXAnchor).isActive = true
         lblNameContact.topAnchor.constraint(equalTo: imageContact.topAnchor, constant: imageContact.frame.height + 15).isActive = true
-
+        
         // Label title Phone autolayout
-        lblTitlePhone.translatesAutoresizingMaskIntoConstraints = false
-        lblTitlePhone.text = "Phone :"
-        lblTitlePhone.font = UIFont.boldSystemFont(ofSize: 18)
-        lblTitlePhone.textColor = .black
-        self.view.addSubview(lblTitlePhone)
+        scrollView.addSubview(lblTitlePhone)
         lblTitlePhone.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10).isActive = true
-        lblTitlePhone.topAnchor.constraint(equalTo: lblNameContact.topAnchor, constant: lblNameContact.frame.height + 35).isActive = true
         lblTitlePhone.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10).isActive = true
+        lblTitlePhone.topAnchor.constraint(equalTo: lblNameContact.topAnchor, constant: lblNameContact.frame.height + 35).isActive = true
 
         // StackView list phone number autolayout
         stackViewNumberPhone.translatesAutoresizingMaskIntoConstraints = false
-        self.view.addSubview(stackViewNumberPhone)
+        scrollView.addSubview(stackViewNumberPhone)
         stackViewNumberPhone.topAnchor.constraint(equalTo: lblTitlePhone.topAnchor, constant: lblTitlePhone.frame.height + 20).isActive = true
-        stackViewNumberPhone.heightAnchor.constraint(greaterThanOrEqualToConstant: 120).isActive = true
+        stackViewNumberPhone.heightAnchor.constraint(greaterThanOrEqualToConstant: 80).isActive = true
         stackViewNumberPhone.leadingAnchor.constraint(equalTo: lblTitlePhone.leadingAnchor, constant: 10).isActive = true
-        stackViewNumberPhone.trailingAnchor.constraint(equalTo: lblTitlePhone.trailingAnchor, constant: 0).isActive = true
+        stackViewNumberPhone.trailingAnchor.constraint(equalTo: lblTitlePhone.trailingAnchor, constant: -10).isActive = true
         stackViewNumberPhone.axis = .vertical
         stackViewNumberPhone.alignment = .fill
-        stackViewNumberPhone.distribution = .fillEqually
+        stackViewNumberPhone.distribution = .fillProportionally
         stackViewNumberPhone.spacing = 10
         stackViewNumberPhone.changeBackgroundColor(color: .red)
         addListPhoneNumber(contact: contact)
@@ -110,8 +113,8 @@ class DetailViewController: UIViewController, EditDelegate {
             stackViewNumberPhone.addArrangedSubview(subStackView)
             subStackView.axis = .horizontal
             subStackView.alignment = .fill
-            subStackView.distribution = .fillEqually
-            subStackView.spacing = 10
+            subStackView.distribution = .equalSpacing
+            subStackView.spacing = 5
             
             let lblLabelValue = UILabel()
             lblLabelValue.translatesAutoresizingMaskIntoConstraints = false
@@ -123,6 +126,7 @@ class DetailViewController: UIViewController, EditDelegate {
             txtPhoneNumber.translatesAutoresizingMaskIntoConstraints = false
             subStackView.addArrangedSubview(txtPhoneNumber)
             txtPhoneNumber.textColor = .blue
+            txtPhoneNumber.isUserInteractionEnabled = false
             txtPhoneNumber.text = contact.phoneNumbers[index].value.stringValue
         }
         
@@ -143,7 +147,9 @@ class DetailViewController: UIViewController, EditDelegate {
     
     //    MARK: Reload from Delegate
     func reloadDataUpdate(newcontact: CNContact) {
-
+        for item in newcontact.phoneNumbers {
+            print(item.value.stringValue)
+        }
     }
 }
 

@@ -70,19 +70,12 @@ class DataProvider {
     public func updateContact(identifierContact: String, oldValue: CNContact, newValue: CNContact) -> Bool {
         do {
             let saveRequest = CNSaveRequest()
-//            let keysToFetch = [CNContactGivenNameKey, CNContactFamilyNameKey, CNContactPhoneNumbersKey] as [CNKeyDescriptor]
-//            let contact = try contactStore.unifiedContact(withIdentifier: identifierContact, keysToFetch: keysToFetch)
             if (oldValue.identifier == identifierContact) {
                 let contactUpdate = oldValue.mutableCopy() as! CNMutableContact
                 contactUpdate.givenName = newValue.givenName
                 contactUpdate.familyName = newValue.familyName
                 contactUpdate.phoneNumbers.removeAll()
-                for index in 0...newValue.phoneNumbers.count - 1 {
-                    contactUpdate.phoneNumbers.insert(newValue.phoneNumbers[index], at: index)
-                    contactUpdate.phoneNumbers[index].label
-                    CNLabelHome
-                }
-                
+                contactUpdate.phoneNumbers = newValue.phoneNumbers
                 saveRequest.update(contactUpdate)
                 try contactStore.execute(saveRequest)
                 return true
