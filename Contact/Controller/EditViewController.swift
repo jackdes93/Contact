@@ -103,8 +103,8 @@ class EditViewController: UIViewController, UITextFieldDelegate {
     }()
     
     var listLabel = [UILabel]()
-    var listTextFieldPhone = [UITextField](
-    )
+    var listTextFieldPhone = [UITextField]()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         btnSave.isEnabled = false
@@ -117,11 +117,7 @@ class EditViewController: UIViewController, UITextFieldDelegate {
     }
 
     override func viewDidDisappear(_ animated: Bool) {
-        if let parentView = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "DetailView") as? DetailViewController {
-            self.delegate = parentView
-            let contact = DataProvider.sharedInstance.fetchContactByIdentifier(identifier: contactInfor.identifier)
-            self.delegate?.reloadDataUpdate(newcontact: contact)
-        }
+       
     }
  
     override func viewDidLayoutSubviews() {
@@ -220,7 +216,11 @@ class EditViewController: UIViewController, UITextFieldDelegate {
     
 //    MARK: Event Bar Button
     @IBAction func handleDone(sender: UIButton) {
-        self.dismiss(animated: true) 
+        self.dismiss(animated: true) {
+            let contact = DataProvider.sharedInstance.fetchContactByIdentifier(identifier: self.contactInfor.identifier)
+            self.delegate?.reloadDataUpdate(newcontact: contact)
+        }
+       
     }
     
     @IBAction func handleSave(sender: UIButton) {
@@ -232,6 +232,7 @@ class EditViewController: UIViewController, UITextFieldDelegate {
         }
 
         if DataProvider.sharedInstance.updateContact(identifierContact: self.contactInfor.identifier, oldValue: contactInfor, newValue: contact) {
+            btnSave.isEnabled = false
             print("Success!")
         } else {
             print("Fail!")

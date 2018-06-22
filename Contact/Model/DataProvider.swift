@@ -85,4 +85,24 @@ class DataProvider {
         }
         return false
     }
+    
+    public func groupByHeaderNumber() -> [[String]] {
+        var result = [[String]]()
+        let nameNetwork = ["MOBIFONE", "VINAPHONE", "VIETTEL", "VIETNAMMOBILE", "GMOBILE", "OTHER"]
+        let listPhone = fetchDataContact()
+        
+        for index in 0...nameNetwork.count-1 {
+            var group = [String]()
+            for contact in listPhone {
+                for numberPhone in contact.phoneNumbers {
+                    var check = numberPhone.value.stringValue
+                    if check.groupingNetworkByHeaderNumber() == nameNetwork[index] {
+                        group.append(numberPhone.value.stringValue)
+                    }
+                }
+            }
+            result.append(group)
+        }
+        return result
+    }
 }

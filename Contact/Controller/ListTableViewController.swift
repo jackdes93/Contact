@@ -15,15 +15,17 @@ class ListTableViewController: UITableViewController {
     var arrayItems = [CNContact]()
     var listAlphabetically = [String]()
     var sections = [[CNContact]]()
-    
     var sharedInstant = DataProvider.sharedInstance
 
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationItem.leftBarButtonItem = editButtonItem
-        self.reloadData()
     }
    
+    override func viewWillAppear(_ animated: Bool) {
+        self.reloadData()
+    }
+    
     //  MARK:  Function
     func addNewUser() {
         let alert = UIAlertController(title: "Liên Hệ Mới", message: "", preferredStyle: .alert)
@@ -62,6 +64,7 @@ class ListTableViewController: UITableViewController {
                 .filter { return ($0.familyName.isEmpty) ? ($0.givenName.firstCharacterOfString() == list): ($0.familyName.firstCharacterOfString() == list) }
                 .sorted {$0.familyName > $1.familyName || $0.givenName > $1.givenName }
         }
+        self.tableView.reloadData()
     }
     
     //    MARK: Delegate & Protocal Table View
@@ -69,6 +72,7 @@ class ListTableViewController: UITableViewController {
         return listAlphabetically.count
     }
     
+    // Short Link trailling
     override func sectionIndexTitles(for tableView: UITableView) -> [String]? {
         return listAlphabetically
     }
@@ -172,17 +176,4 @@ class ListTableViewController: UITableViewController {
     }
 }
 
-// MARK: Extension
-public extension String {
 
-    func firstCharacterOfString() -> String {
-        return String(self[self.startIndex]).uppercased()
-    }
-    
-    mutating func replaceString(string:String, at startIndex:String.Index, ofSetBy: Int) -> String {
-        let range = startIndex..<self.index(startIndex, offsetBy: ofSetBy)
-        self.replaceSubrange(range, with: string)
-
-        return self
-    }
-}

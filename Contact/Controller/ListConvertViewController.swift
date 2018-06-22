@@ -12,12 +12,12 @@ import Contacts
 class ListConvertViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     @IBOutlet weak var tableView: UITableView!
-   
-    var objectData = [Object]()
+    var nameNetwork = ["MOBIFONE", "VINAPHONE", "VIETTEL", "VIETNAMMOBILE", "GMOBILE", "OTHER"]
+    var listNumberConvert = [[String]]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        listNumberConvert = DataProvider.sharedInstance.groupByHeaderNumber()
     }
 
     // MARK: - TableView Delegate & DataSource
@@ -26,21 +26,20 @@ class ListConvertViewController: UIViewController, UITableViewDelegate, UITableV
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return objectData.count
+        return nameNetwork.count
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return objectData[section].sectionValue.count
+        return  listNumberConvert[section].count
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return objectData[section].sectionName
+        return "\(nameNetwork[section])  (\(listNumberConvert[section].count))"
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
-        let section = indexPath.section
-        cell.textLabel?.text = objectData[section].sectionValue[indexPath.row].userName
+        cell.textLabel?.text = listNumberConvert[indexPath.section][indexPath.row]
         return cell
     }
     

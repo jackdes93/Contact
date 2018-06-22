@@ -37,15 +37,27 @@ class DetailViewController: UIViewController, EditDelegate {
         lbl.textColor = .black
         return lbl
     }()
+    
     var lblTitlePhone: UILabel = {
         let lbl = UILabel()
+        lbl.text = ""
         lbl.translatesAutoresizingMaskIntoConstraints = false
         lbl.font = UIFont.boldSystemFont(ofSize: 18)
         lbl.text = "Phone : "
         lbl.textColor = .black
         return lbl
     }()
-    var stackViewNumberPhone = UIStackView()
+    
+    var stackViewNumberPhone: UIStackView = {
+        let stackView = UIStackView()
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.axis = .vertical
+        stackView.alignment = .fill
+        stackView.distribution = .fillProportionally
+        stackView.spacing = 10
+        return stackView
+    }()
+    
     var scrollView: UIScrollView = {
         let scroll = UIScrollView()
         scroll.translatesAutoresizingMaskIntoConstraints = false
@@ -53,14 +65,13 @@ class DetailViewController: UIViewController, EditDelegate {
         return scroll
     }()
     
+    var listLabel = [UILabel]()
+    var listPhoneValue = [UITextField]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationItem.rightBarButtonItem = editButtonItem
         
-    }
-    
-    override func viewDidLayoutSubviews() {
         self.view.addSubview(scrollView)
         scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0).isActive = true
         scrollView.topAnchor.constraint(equalTo: view.topAnchor, constant: 10).isActive = true
@@ -75,8 +86,7 @@ class DetailViewController: UIViewController, EditDelegate {
         imageContact.heightAnchor.constraint(equalTo: imageContact.widthAnchor, multiplier: 1).isActive = true
         imageContact.centerXAnchor.constraint(equalTo: scrollView.centerXAnchor).isActive = true
         imageContact.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 10).isActive = true
-       
-
+        
         // Label name contact autolayout
         lblNameContact.text = "\(contact.familyName) \(contact.givenName)"
         scrollView.addSubview(lblNameContact)
@@ -88,7 +98,7 @@ class DetailViewController: UIViewController, EditDelegate {
         lblTitlePhone.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10).isActive = true
         lblTitlePhone.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10).isActive = true
         lblTitlePhone.topAnchor.constraint(equalTo: lblNameContact.topAnchor, constant: lblNameContact.frame.height + 35).isActive = true
-
+        
         // StackView list phone number autolayout
         stackViewNumberPhone.translatesAutoresizingMaskIntoConstraints = false
         scrollView.addSubview(stackViewNumberPhone)
@@ -96,12 +106,12 @@ class DetailViewController: UIViewController, EditDelegate {
         stackViewNumberPhone.heightAnchor.constraint(greaterThanOrEqualToConstant: 80).isActive = true
         stackViewNumberPhone.leadingAnchor.constraint(equalTo: lblTitlePhone.leadingAnchor, constant: 10).isActive = true
         stackViewNumberPhone.trailingAnchor.constraint(equalTo: lblTitlePhone.trailingAnchor, constant: -10).isActive = true
-        stackViewNumberPhone.axis = .vertical
-        stackViewNumberPhone.alignment = .fill
-        stackViewNumberPhone.distribution = .fillProportionally
-        stackViewNumberPhone.spacing = 10
-        stackViewNumberPhone.changeBackgroundColor(color: .red)
+        
         addListPhoneNumber(contact: contact)
+    }
+
+    override func viewDidLayoutSubviews() {
+        
     }
     
     // MARK: Autolayout
@@ -128,28 +138,37 @@ class DetailViewController: UIViewController, EditDelegate {
             txtPhoneNumber.textColor = .blue
             txtPhoneNumber.isUserInteractionEnabled = false
             txtPhoneNumber.text = contact.phoneNumbers[index].value.stringValue
+            
+            listLabel.append(lblLabelValue)
+            listPhoneValue.append(txtPhoneNumber)
         }
-        
     }
     
     // MARK: Navigation
     override var prefersStatusBarHidden: Bool {
-        return true;
+        return true
     }
     
     override func setEditing(_ editing: Bool, animated: Bool) {
         if let editView = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "EditView") as? EditViewController {
             editView.contactInfor = contact
-                present(editView, animated: true, completion: nil)
+            editView.delegate = self
+            self.present(editView, animated: true, completion: nil)
         }
-    
+       
     }
     
+   
     //    MARK: Reload from Delegate
     func reloadDataUpdate(newcontact: CNContact) {
-        for item in newcontact.phoneNumbers {
-            print(item.value.stringValue)
+        imageContact.image = (newcontact.thumbnailImageData != nil) ? UIImage(data: newcontact.thumbnailImageData!) : #imageLiteral(resourceName: "imageUser.png")
+        lblNameContact.text = "\(newcontact.familyName) \(newcontact.givenName)"
+        let range = newcontact.phoneNumbers.count - 1
+        for index in 0...range {
+            listLabel[index].text = newcontact.phoneNumbers[index].label!
+            listPhoneValue[index].text = newcontact.phoneNumbers[index].value.stringValue
         }
+
     }
 }
 
