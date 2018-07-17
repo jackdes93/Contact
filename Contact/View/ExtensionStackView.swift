@@ -9,6 +9,12 @@
 import Foundation
 import UIKit
 
+extension Bundle {
+    var productName: String? {
+        return object(forInfoDictionaryKey: "CFBundleName") as? String
+    }
+}
+
 extension UIStackView {
     func changeBackgroundColor(color: UIColor) {
         let backgroundLayer = CAShapeLayer()

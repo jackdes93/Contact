@@ -15,16 +15,76 @@ class ListTableViewController: UITableViewController {
     var arrayItems = [CNContact]()
     var listAlphabetically = [String]()
     var sections = [[CNContact]]()
-    var sharedInstant = DataProvider.sharedInstance
-
+//    var sharedInstant = DataProvider.sharedInstance
+    var contactStore = CNContactStore()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationItem.leftBarButtonItem = editButtonItem
     }
    
+    override func viewDidAppear(_ animated: Bool) {
+//        DispatchQueue.main.async {
+//            self.contactStore.requestAccess(for: .contacts) { (success, error) in
+//                if !success {
+//                    print(error!)
+//                }
+//            }
+//        }
+    }
+    
     override func viewWillAppear(_ animated: Bool) {
         self.reloadData()
     }
+    
+    // MARK: Check Access Contact
+//    func requestAccessContacts(completionHandler: @escaping (_ access: Bool) -> Void) {
+//        switch CNContactStore.authorizationStatus(for: .contacts) {
+//        case .authorized:
+//            completionHandler(true)
+//        case .denied:
+//            alertAcccessContact(completionHandler)
+//        case .restricted, .notDetermined:
+//            contactStore.requestAccess(for: .contacts, completionHandler: { (access, error) in
+//                if access {
+//                    completionHandler(true)
+//                } else {
+//                    DispatchQueue.main.async {
+//                        self.alertAcccessContact(completionHandler)
+//                    }
+//                }
+//            })
+//        }
+//    }
+//    
+//    private func alertAcccessContact(_ completionHandler: @escaping(_ access: Bool) -> Void) {
+//        var productName = ""
+//        if let name = Bundle.main.productName {
+//            productName = name
+//        }
+//        
+//        let alertView = UIAlertController(title: "Access", message: "\(productName) muốn truy cập vào danh bạ của bạn?", preferredStyle: .alert)
+//        let accept = UIAlertAction(title: "Đồng Ý", style: .default) { (acceptAction) in
+//            completionHandler(false)
+//            self.openSetting()
+//        }
+//        
+//        let cancel = UIAlertAction(title: "Không", style: .cancel) { (action) in
+//            completionHandler(false)
+//        }
+//        alertView.addAction(accept)
+//        alertView.addAction(cancel)
+//        DispatchQueue.main.async {
+//            self.present(alertView, animated: true, completion: nil)
+//        }
+//    }
+//    
+//    func openSetting() {
+//        let url = URL(string: UIApplicationOpenSettingsURLString)
+//        print(url!)
+//        UIApplication.shared.openURL(url!)
+//    }
+//    
     
     //  MARK:  Function
     func addNewUser() {
@@ -42,7 +102,7 @@ class ListTableViewController: UITableViewController {
             newContact.familyName = familyName.text!
             newContact.givenName = givenName.text!
             newContact.phoneNumbers = [phoneNumber]
-            self.sharedInstant.addNewContact(contact: newContact)
+            DataProvider.sharedInstance.addNewContact(contact: newContact)
             self.reloadData()
         })
         
@@ -54,7 +114,7 @@ class ListTableViewController: UITableViewController {
     }
     
     func reloadData() {
-        arrayItems = sharedInstant.fetchDataContact()
+        arrayItems = DataProvider.sharedInstance.fetchDataContact()
         listAlphabetically = Array(Set(self.arrayItems.map {
             return $0.familyName.isEmpty ? $0.givenName.firstCharacterOfString() : $0.familyName.firstCharacterOfString()
         })).sorted()

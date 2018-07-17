@@ -234,6 +234,7 @@ class EditViewController: UIViewController, UITextFieldDelegate {
         if DataProvider.sharedInstance.updateContact(identifierContact: self.contactInfor.identifier, oldValue: contactInfor, newValue: contact) {
             btnSave.isEnabled = false
             print("Success!")
+            handleDone(sender: sender)
         } else {
             print("Fail!")
         }
